@@ -2,7 +2,7 @@ PROJECT_NAME ?= tor-docker-qec
 VERSION ?= $(strip $(shell cat VERSION))
 GIT_COMMIT = $(strip $(shell git rev-parse --short HEAD))
 DOCKER_IMAGE ?= ebissbort/tor-docker-qec
-DOCKER_TAG ?= latest
+DOCKER_TAG ?= beta-latest
 GIT_HASH ?= $(shell git log --format="%h" -n 1)
 
 # Build Docker image
