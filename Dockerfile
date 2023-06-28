@@ -9,11 +9,16 @@ RUN apk --update \
         add \
           tor \
           torsocks \
+          python3 \
+          python3-dev \
+          py3-pip \
+          build-base \
 &&  apk --update \
         --allow-untrusted \
         --repository http://dl-4.alpinelinux.org/alpine/edge/testing/ \
         add \
           obfs4proxy \
+&&  pip install nyx --no-cache-dir \
 &&  rm -rf /var/cache/apk/* \
            /tmp/* \
            /var/tmp/*
@@ -25,6 +30,8 @@ RUN sed "1s/^/SocksPort 0.0.0.0:9050\n/" /etc/tor/torrc.sample > /etc/tor/torrc 
 
 VOLUME ["/etc/torrc.d"]
 VOLUME ["/var/lib/tor"]
+
+USER tor
 
 ADD docker-entrypoint.sh /docker-entrypoint.sh
 
