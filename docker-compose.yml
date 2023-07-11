@@ -17,8 +17,8 @@ services:
         VOLUME ["/etc/torrc.d"]
         VOLUME ["/var/lib/tor"]
         USER tor
-        ADD --chmod=755 docker-entrypoint.sh /docker-entrypoint.sh
-        ENTRYPOINT ["/docker-entrypoint.sh"]
+        ADD --chmod=755 docker-entrypoint.sh /usr/local/docker-entrypoint.sh
+        ENTRYPOINT ["/usr/local/docker-entrypoint.sh"]
     restart: unless-stopped
     network_mode: "host"
     volumes:
