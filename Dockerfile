@@ -33,6 +33,8 @@ VOLUME ["/var/lib/tor"]
 
 USER tor
 
-ADD docker-entrypoint.sh /docker-entrypoint.sh
+# TODO: add ulimits
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ADD --chmod=755 docker-entrypoint.sh /usr/local/docker-entrypoint.sh
+
+ENTRYPOINT ["/usr/local/docker-entrypoint.sh"]
