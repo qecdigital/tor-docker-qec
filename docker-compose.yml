@@ -1,8 +1,34 @@
-version: '3'
+version: '2'
 
 services:
   tor:
-    build: .
-    ports:
-      - 127.0.0.1:9050:9050/tcp
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM alpine:latest
+        LABEL org.opencontainers.image.authors="\"QEC Digital Alliance\" <tech@qec.digital>"
+        RUN apk --update --allow-untrusted --repository http://dl-4.alpinelinux.org/alpine/edge/community/ add tor torsocks python3 python3-dev py3-pip build-base
+        RUN apk --update --allow-untrusted --repository http://dl-4.alpinelinux.org/alpine/edge/testing/ add obfs4proxy
+        RUN pip install nyx --no-cache-dir
+        RUN rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
+        RUN sed "1s/^/SocksPort 0.0.0.0:9050\n/" /etc/tor/torrc.sample > /etc/tor/torrc
+        RUN  sed -i "s|#%include /etc/torrc.d/\*.conf|%include /etc/torrc.d/\*.conf|g" /etc/tor/torrc
+        RUN  mkdir -p /etc/torrc.d
+        VOLUME ["/etc/torrc.d"]
+        VOLUME ["/var/lib/tor"]
+        USER tor
+        ADD --chmod=755 docker-entrypoint.sh /docker-entrypoint.sh
+        ENTRYPOINT ["/docker-entrypoint.sh"]
     restart: unless-stopped
+    network_mode: "host"
+    volumes:
+      - type: bind
+        source: ./drive/etc-tor/
+        target: /etc/torrc.d/
+        volume:
+          nocopy: true
+      - type: bind
+        source: ./drive/var-tor/
+        target: /var/lib/tor/
+        volume:
+          nocopy: true
